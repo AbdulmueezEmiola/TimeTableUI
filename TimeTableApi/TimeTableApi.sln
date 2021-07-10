@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTableApi", "TimeTableApi.csproj", "{910FD271-BED8-4F0D-AE05-E7EB56D6E502}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{910FD271-BED8-4F0D-AE05-E7EB56D6E502}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{910FD271-BED8-4F0D-AE05-E7EB56D6E502}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{910FD271-BED8-4F0D-AE05-E7EB56D6E502}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{910FD271-BED8-4F0D-AE05-E7EB56D6E502}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {39118258-CCDC-481A-91E0-C83B8601D858}
+	EndGlobalSection
+EndGlobal
