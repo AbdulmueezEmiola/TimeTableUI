@@ -12,10 +12,15 @@ namespace TimeTableApi.Services
         {
             var firstValue = first.Split(":").Select(x => int.Parse(x)).ToList();
             var secondValue = second.Split(":").Select(x => int.Parse(x)).ToList();
-            if(firstValue[0]>secondValue[0] && firstValue[1] > secondValue[1])
+            if(firstValue[0]>secondValue[0])
             {
                 return 1;
-            }else if(firstValue[0] == secondValue[0] && firstValue[1] == secondValue[1])
+            }
+            else if (firstValue[0] == secondValue[0] && firstValue[1] > secondValue[1])
+            {
+                return 0;
+            }
+            else if(firstValue[0] == secondValue[0] && firstValue[1] == secondValue[1])
             {
                 return 0;
             }

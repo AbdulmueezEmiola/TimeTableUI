@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\timetable"
+    "\\TimeTableApi",
+    "\\TimeTableApi\\Settings"
   ],
-  "SelectedNode": "\\timetable\\.gitignore",
+  "SelectedNode": "\\TimeTableApi\\.gitattributes",
   "PreviewInSolutionExplorer": false
 }

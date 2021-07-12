@@ -8,6 +8,25 @@ namespace TimeTableApi.Models
 {
     public class Lesson : Entity
     {
+        public Lesson()
+        {
+
+        }
+        public Lesson(Lesson lesson)
+        {
+            CourseName = lesson.CourseName;
+            StartTime = lesson.StartTime;
+            EndTime = lesson.EndTime;
+            Week = lesson.Week;
+            LessonType = lesson.LessonType;
+            Day = lesson.Day;
+            Teacher = lesson.Teacher;
+            TeacherId = lesson.TeacherId;
+            ClassroomId = lesson.ClassroomId;
+            Classroom = lesson.Classroom;
+            GroupId = lesson.GroupId;
+            Group = lesson.Group;
+        }
         public string CourseName { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }

@@ -104,33 +104,68 @@ namespace TimeTableApi.Controllers
         public async Task<ActionResult<Lesson>> PostLesson(Lesson lesson)
         {
             List<string> errors = new List<string>();
-            var sameClassroom = _context.Lessons.AsEnumerable().FirstOrDefault(x => x.ClassroomId == lesson.ClassroomId && CompareTime.CheckTimeOverlap(x,lesson));
-            if(sameClassroom!= null)
+            if (lesson.Week == 3)
             {
-                errors.Add("The classroom is in use within that time period");
+                Lesson lessonOdd = new Lesson(lesson);
+                lessonOdd.Week = 1;
+                errors = errors.Concat(PostLessonPerWeek(lessonOdd)).ToList();
+
+                Lesson lessonEven = new Lesson(lesson);
+                lessonEven.Week = 2;
+                errors = errors.Concat(PostLessonPerWeek(lessonEven)).ToList();
+
+                if (errors.Count > 0)
+                {
+                    return BadRequest(errors);
+                }
+                else
+                {
+                    _context.Lessons.Add(lessonEven);
+                    _context.Lessons.Add(lessonOdd);
+                    await _context.SaveChangesAsync();
+
+                    return CreatedAtAction("GetLesson", new { id = lesson.Id }, lesson);
+                }
             }
-            var sameGroup = _context.Lessons.AsEnumerable().FirstOrDefault(x => x.GroupId== lesson.GroupId && CompareTime.CheckTimeOverlap(x, lesson));
+            else
+            {
+                errors = PostLessonPerWeek(lesson);
+                if (errors.Count > 0)
+                {
+                    return BadRequest(errors);
+                }
+                else
+                {
+                    _context.Lessons.Add(lesson);
+                    await _context.SaveChangesAsync();
+
+                    return CreatedAtAction("GetLesson", new { id = lesson.Id }, lesson);
+                }
+            }
+            
+            
+        }
+
+        private List<string> PostLessonPerWeek(Lesson lesson)
+        {
+            List<string> errors = new List<string>();
+            var sameClassroom = _context.Lessons.AsEnumerable().FirstOrDefault(x => x.ClassroomId == lesson.ClassroomId && CompareTime.CheckTimeOverlap(x, lesson));
+            var weekType = lesson.Week == 1? "Odd week" : "Even week";
+            if (sameClassroom != null)
+            {
+                errors.Add("The classroom is in use within that time period "+weekType);
+            }
+            var sameGroup = _context.Lessons.AsEnumerable().FirstOrDefault(x => x.GroupId == lesson.GroupId && CompareTime.CheckTimeOverlap(x, lesson));
             if (sameGroup != null)
             {
-                errors.Add("The group has a class within that time period");
+                errors.Add("The group has a class within that time period "+weekType);
             }
             var sameTeacher = _context.Lessons.AsEnumerable().FirstOrDefault(x => x.TeacherId == lesson.TeacherId && CompareTime.CheckTimeOverlap(x, lesson));
             if (sameTeacher != null)
             {
-                errors.Add("The teacher has a class within that time period");
+                errors.Add("The teacher has a class within that time period "+weekType);
             }
-            
-            if(errors.Count > 0)
-            {
-                return BadRequest(errors);
-            }
-            else
-            {
-                _context.Lessons.Add(lesson);
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction("GetLesson", new { id = lesson.Id }, lesson);
-            }
+            return errors;
         }
 
         
