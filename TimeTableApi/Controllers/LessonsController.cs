@@ -76,10 +76,31 @@ namespace TimeTableApi.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(lesson).State = EntityState.Modified;
+            List<string> errors = new List<string>();
+            if (CompareTime.Compare(lesson.EndTime, lesson.StartTime) < 1)
+            {
+                errors.Add("End Time must be greater than start time");
+                return BadRequest(errors);
+            }
+            if (lesson.Week == 3)
+            {
+                errors.Add("Choose either even or odd weeks");
+                return BadRequest(errors);
+            }
+            else
+            {
+                errors = PutLessonPerWeek(lesson);
+
+                if (errors.Count > 0)
+                {
+                    return BadRequest(errors);
+                }                
+                _context.Entry(lesson).State = EntityState.Modified;
+            }
 
             try
             {
+                
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -104,6 +125,11 @@ namespace TimeTableApi.Controllers
         public async Task<ActionResult<Lesson>> PostLesson(Lesson lesson)
         {
             List<string> errors = new List<string>();
+            if(CompareTime.Compare(lesson.EndTime,lesson.StartTime)<1)
+            {
+                errors.Add("End Time must be greater than start time");
+                return BadRequest(errors);
+            }
             if (lesson.Week == 3)
             {
                 Lesson lessonOdd = new Lesson(lesson);
@@ -124,7 +150,7 @@ namespace TimeTableApi.Controllers
                     _context.Lessons.Add(lessonOdd);
                     await _context.SaveChangesAsync();
 
-                    return CreatedAtAction("GetLesson", new { id = lesson.Id }, lesson);
+                    return CreatedAtAction("GetLesson", new { evenId = lessonEven.Id,oddId = lessonOdd.Id }, lesson);
                 }
             }
             else
@@ -168,7 +194,29 @@ namespace TimeTableApi.Controllers
             return errors;
         }
 
-        
+        private List<string> PutLessonPerWeek(Lesson lesson)
+        {
+            List<string> errors = new List<string>();
+            var sameClassroom = _context.Lessons.AsNoTracking().AsEnumerable().FirstOrDefault(x => x.ClassroomId == lesson.ClassroomId && CompareTime.CheckTimeOverlap(x, lesson) && lesson.Id != x.Id);
+            var weekType = lesson.Week == 1 ? "Odd week" : "Even week";
+            if (sameClassroom != null)
+            {
+                errors.Add("The classroom is in use within that time period " + weekType);
+            }
+            var sameGroup = _context.Lessons.AsNoTracking().AsEnumerable().FirstOrDefault(x => x.GroupId == lesson.GroupId && CompareTime.CheckTimeOverlap(x, lesson) && lesson.Id != x.Id);
+            if (sameGroup != null)
+            {
+                errors.Add("The group has a class within that time period " + weekType);
+            }
+            var sameTeacher = _context.Lessons.AsNoTracking().AsEnumerable().FirstOrDefault(x => x.TeacherId == lesson.TeacherId && CompareTime.CheckTimeOverlap(x, lesson) && lesson.Id != x.Id);
+            if (sameTeacher != null)
+            {
+                errors.Add("The teacher has a class within that time period " + weekType);
+            }
+            return errors;
+        }
+
+
         // DELETE: api/Lessons/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLesson(int id)
