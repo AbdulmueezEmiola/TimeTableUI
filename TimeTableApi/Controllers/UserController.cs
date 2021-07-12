@@ -20,18 +20,25 @@ namespace TimeTableApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult> RegisterAsync(RegisterModel model)
+        public async Task<IActionResult> RegisterAsync(RegisterModel model)
         {
 
             var result = await _userService.RegisterAsync(model);
-            return Ok(result);
+            return result;
         }
         
         [HttpPost("login")]
         public async Task<IActionResult> GetTokenAsync(TokenRequestModel model)
         {
             var result = await _userService.GetTokenAsync(model);
-            return Ok(result);
+            if (result.IsAuthenticated)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound(result.Message);
+            }
         }
     }
 }

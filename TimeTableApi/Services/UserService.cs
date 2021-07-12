@@ -39,7 +39,11 @@ namespace TimeTableApi.Services
             var validRole = Enum.GetValues(typeof(Authorization.Roles)).Cast<Authorization.Roles>().Where(x => x.ToString().ToLower() == model.Role.ToLower()).FirstOrDefault();
             if(validRole == Authorization.Roles.Teacher && (String.IsNullOrEmpty(model.Department) || String.IsNullOrEmpty(model.Faculty)))
             {
-                return new BadRequestObjectResult("Department and Faculty are required for a teacher");
+                
+                var errors = new[] { 
+                    new { Code = "Input Error", Description = "Department and Faculty are required for a teacher" } 
+                };
+                return new BadRequestObjectResult(errors);
             }
             if (userWithSameName == null)
             {
@@ -68,7 +72,7 @@ namespace TimeTableApi.Services
             }
             else
             {
-                return new BadRequestObjectResult($"UserName {user.UserName} is already registered.");
+                return new StatusCodeResult(303);
             }
         }
 

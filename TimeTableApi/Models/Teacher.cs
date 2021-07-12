@@ -11,6 +11,7 @@ namespace TimeTableApi.Models
 
     public class Teacher:Entity
     {
+        public string UserName { get; set; }
         public string Department { get; set; }
         public string Faculty { get; set; }
         public string UserId { get; set; }

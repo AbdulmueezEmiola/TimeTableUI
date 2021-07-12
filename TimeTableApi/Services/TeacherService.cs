@@ -19,6 +19,7 @@ namespace TimeTableApi.Services
         {
             Teacher teacher = new Teacher
             {
+                UserName = user.UserName,
                 Department = faculty,
                 Faculty = department,
                 UserId = user.Id

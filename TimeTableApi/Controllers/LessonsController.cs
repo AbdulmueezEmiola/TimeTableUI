@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -98,27 +99,25 @@ namespace TimeTableApi.Controllers
 
         // POST: api/Lessons
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles ="Teacher")]
         [HttpPost]
         public async Task<ActionResult<Lesson>> PostLesson(Lesson lesson)
         {
             List<string> errors = new List<string>();
-            var sameClassroom = _context.Lessons.FirstOrDefault(x => x.ClassroomId == lesson.ClassroomId && 
-            (   CompareTime.Compare(x.StartTime, lesson.StartTime) > -1 && CompareTime.Compare(x.EndTime, lesson.EndTime) < 1) && x.Week == lesson.Week && x.Day == lesson.Day);
+            var sameClassroom = _context.Lessons.AsEnumerable().FirstOrDefault(x => x.ClassroomId == lesson.ClassroomId && CompareTime.CheckTimeOverlap(x,lesson));
             if(sameClassroom!= null)
             {
                 errors.Add("The classroom is in use within that time period");
             }
-            var sameGroup = _context.Lessons.FirstOrDefault(x => x.GroupId== lesson.GroupId &&
-                (CompareTime.Compare(x.StartTime, lesson.StartTime) > -1 && CompareTime.Compare(x.EndTime, lesson.EndTime) < 1) && x.Week == lesson.Week && x.Day == lesson.Day);
+            var sameGroup = _context.Lessons.AsEnumerable().FirstOrDefault(x => x.GroupId== lesson.GroupId && CompareTime.CheckTimeOverlap(x, lesson));
             if (sameGroup != null)
             {
-                errors.Add("The classroom is in use within that time period");
+                errors.Add("The group has a class within that time period");
             }
-            var sameTeacher = _context.Lessons.FirstOrDefault(x => x.TeacherId == lesson.TeacherId &&
-                (CompareTime.Compare(x.StartTime, lesson.StartTime) > -1 && CompareTime.Compare(x.EndTime, lesson.EndTime) < 1) && x.Week == lesson.Week && x.Day == lesson.Day);
+            var sameTeacher = _context.Lessons.AsEnumerable().FirstOrDefault(x => x.TeacherId == lesson.TeacherId && CompareTime.CheckTimeOverlap(x, lesson));
             if (sameTeacher != null)
             {
-                errors.Add("The classroom is in use within that time period");
+                errors.Add("The teacher has a class within that time period");
             }
             
             if(errors.Count > 0)
