@@ -18,7 +18,7 @@ namespace TimeTableApi.Services
             }
             else if (firstValue[0] == secondValue[0] && firstValue[1] > secondValue[1])
             {
-                return 0;
+                return 1;
             }
             else if(firstValue[0] == secondValue[0] && firstValue[1] == secondValue[1])
             {
@@ -38,7 +38,7 @@ namespace TimeTableApi.Services
             {
                 return false;
             }
-            else if(Compare(lessonA.StartTime,lessonB.StartTime) == -1 && Compare(lessonA.EndTime, lessonB.EndTime) == -1)
+            else if(Compare(lessonA.StartTime,lessonB.StartTime) == -1 && Compare(lessonA.EndTime, lessonB.StartTime) == -1)
             {
                 return false;
             }else if(Compare(lessonA.StartTime, lessonB.EndTime) == 1 && Compare(lessonA.StartTime, lessonB.EndTime) == 1)

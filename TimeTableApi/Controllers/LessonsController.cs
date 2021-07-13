@@ -68,6 +68,7 @@ namespace TimeTableApi.Controllers
 
         // PUT: api/Lessons/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Teacher")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutLesson(int id, Lesson lesson)
         {
@@ -150,7 +151,7 @@ namespace TimeTableApi.Controllers
                     _context.Lessons.Add(lessonOdd);
                     await _context.SaveChangesAsync();
 
-                    return CreatedAtAction("GetLesson", new { evenId = lessonEven.Id,oddId = lessonOdd.Id }, lesson);
+                    return CreatedAtAction("GetLesson", new { id = lessonEven.Id}, lesson);
                 }
             }
             else
@@ -218,6 +219,7 @@ namespace TimeTableApi.Controllers
 
 
         // DELETE: api/Lessons/5
+        [Authorize(Roles = "Teacher")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLesson(int id)
         {

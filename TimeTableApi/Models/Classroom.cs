@@ -7,6 +7,7 @@ namespace TimeTableApi.Models
 {
     public class Classroom:Entity
     {
+        
         public int roomNumber { get; set; }
         public string Department { get; set; }
         public string Faculty { get; set; }

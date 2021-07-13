@@ -20,8 +20,8 @@ namespace TimeTableApi.Services
             Teacher teacher = new Teacher
             {
                 UserName = user.UserName,
-                Department = faculty,
-                Faculty = department,
+                Department = department,
+                Faculty = faculty,
                 UserId = user.Id
             };
             _context.Teachers.Add(teacher);
